@@ -17,3 +17,4 @@ So a lot of us would be landing shortly in Pitt. We wanted to create something t
 - We need to authenticate via a google service. Currently, since we'd use this for CMU, we have enabled `andrew.cmu.edu` as the only allowed organization but you can swap out the google client id in the env file for your requirements.
 
 <!-- ![Landing Page](public/landing-page.png) -->
+
