@@ -27,6 +27,7 @@ const Profile = () => {
     setName,
     setEmail,
     userToken,
+    setProfileHasPhoneNumber,
   } = registrationContext;
 
   useEffect(() => {
@@ -66,6 +67,7 @@ const Profile = () => {
             response.data.userDetails?.phoneNo
         )
       );
+      setProfileHasPhoneNumber(true);
 
       if (response.data?.userDetails?.name) {
         setName(response.data?.userDetails?.name);

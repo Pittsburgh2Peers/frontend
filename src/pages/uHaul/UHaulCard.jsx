@@ -1,5 +1,4 @@
-import { UserOutlined } from "@ant-design/icons";
-import { createWhatsAppLink } from "../../lib/constants";
+import { createWhatsAppLinkForUhaul } from "../../lib/constants";
 import { motion } from "framer-motion";
 import moment from "moment";
 
@@ -10,7 +9,9 @@ const UHaulCard = ({
   driverRequired,
   phoneNo,
   receiverName,
-  date,
+  senderDate,
+  senderTime,
+  receiverDate,
   name,
   isSelf = false,
 }) => {
@@ -18,15 +19,16 @@ const UHaulCard = ({
     <motion.a
       href={`${
         !isSelf && name
-          ? createWhatsAppLink({
+          ? createWhatsAppLinkForUhaul({
               phone: phoneNo,
               receiverName: receiverName,
-              source: startLocation,
+              date: senderDate,
+              receiverDate: receiverDate,
               senderName: name,
             })
           : "#"
       }`}
-      target="_blank"
+      target={!isSelf && name ? "_blank" : ""}
       rel="noreferrer"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -52,9 +54,12 @@ const UHaulCard = ({
         </div>
         <p className="flex flex-row gap-2 items-center justify-start">
           <p className="">
-            {moment(date + " " + time, "DD-MM-yyyy hh:m").format(
-              "DD MMM h:mm A"
-            )}
+            {moment(
+              (isSelf ? senderDate : receiverDate) +
+                " " +
+                (isSelf ? senderTime : time),
+              "DD-MM-yyyy HH:m"
+            ).format("DD MMM - h:mm A")}
           </p>
         </p>
       </div>

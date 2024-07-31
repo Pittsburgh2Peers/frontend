@@ -107,11 +107,10 @@ const Uhaul = () => {
         <UHaulCard
           startLocation={pendingRequestDetails?.startLocation}
           endLocation={pendingRequestDetails?.endLocation}
+          senderTime={pendingRequestDetails?.time}
           time={moment(pendingRequestDetails?.time, "HH:mm").format("HH:mm")}
           driverRequired={pendingRequestDetails?.personWillingToDrive}
-          date={moment(pendingRequestDetails?.selectedDate)
-            .set("year", moment().year())
-            .format("DD-MM-YYYY")}
+          senderDate={pendingRequestDetails?.date}
           receiverName={name}
           phoneNo={phoneNo}
           isSelf
@@ -139,9 +138,11 @@ const Uhaul = () => {
                   endLocation={endLocation}
                   time={time}
                   driverRequired={personWillingtoDrive}
-                  date={date}
+                  receiverDate={date}
                   receiverName={receiverName}
+                  senderTime={pendingRequestDetails?.time}
                   phoneNo={phoneNo}
+                  senderDate={pendingRequestDetails?.date}
                 />
               );
             }

@@ -27,6 +27,8 @@ import axios from "axios";
 import mixpanel from "mixpanel-browser";
 import { MixpanelEvents } from "../../lib/mixpanel";
 import { useNavigate } from "react-router-dom";
+import { formatPhoneNumberIntl } from "react-phone-number-input";
+import "./home.css";
 
 const Home = () => {
   const registrationContext = useContext(RegistrationContext);
@@ -37,6 +39,8 @@ const Home = () => {
     selectedDate,
     handleDateChange,
     selectedTime,
+    setPhoneNumber,
+    setProfileHasPhoneNumber,
     handleTimeChange,
     handlePrev,
     handleNext,
@@ -92,6 +96,35 @@ const Home = () => {
   }, [service, validateServiceSelection]);
 
   useEffect(() => {
+    const getUserProfileDetails = async () => {
+      const userProfileDetails = {
+        token: localStorage.getItem("p2puserToken"),
+        email: email,
+      };
+      const response = await axios.post(
+        process.env.REACT_APP_BASE_API_URL +
+          ENDPOINTS.POST_GetUserProfileDetails,
+        userProfileDetails
+      );
+
+      if (
+        response.data?.userDetails?.phoneNo &&
+        response.data?.userDetails?.countryCode
+      ) {
+        setPhoneNumber(
+          formatPhoneNumberIntl(
+            response.data.userDetails?.countryCode +
+              response.data.userDetails?.phoneNo
+          )
+        );
+        setProfileHasPhoneNumber(true);
+
+        if (response.data?.userDetails?.name) {
+          setName(response.data?.userDetails?.name);
+        }
+      }
+    };
+    getUserProfileDetails();
     checkIsUserEligibleForRequests();
   }, [userToken]);
   const validateArrivalDetails = () => {
@@ -121,12 +154,14 @@ const Home = () => {
       email: email,
     };
     try {
-      const response = await axios.post(
-        process.env.REACT_APP_BASE_API_URL + ENDPOINTS.POST_UserProfileComplete,
-        checkEligibilityBody
-      );
-
-      setIsUserEligibleForRequests(response.data.eligible);
+      if (email && userToken) {
+        const response = await axios.post(
+          process.env.REACT_APP_BASE_API_URL +
+            ENDPOINTS.POST_UserProfileComplete,
+          checkEligibilityBody
+        );
+        setIsUserEligibleForRequests(response.data.eligible);
+      }
     } catch (error) {
       console.log(error);
     }

@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { format, subDays, differenceInCalendarDays } from "date-fns";
-import Wheel from "./Wheel";
+// import React, { useEffect, useState } from "react";
+// import { format, subDays, differenceInCalendarDays } from "date-fns";
+// import Wheel from "./Wheel";
 import "./styles.css";
 import { Input } from "antd";
 import { motion } from "framer-motion";
@@ -13,24 +13,24 @@ const DateTimePicker = ({
   setSelectedDate,
   service,
 }) => {
-  const [currentHour, setCurrentHour] = useState(
-    selectedTime ? parseInt(selectedTime.split(":")[0]) : 0
-  );
-  const [currentMinutes, setCurrentMinutes] = useState(
-    selectedTime ? parseInt(selectedTime.split(":")[1]) : 0
-  );
-  const [currentDate, setCurrentDate] = useState(
-    format(subDays(new Date(), 0), "iii d LLL")
-  );
+  //   const [currentHour, setCurrentHour] = useState(
+  //     selectedTime ? parseInt(selectedTime.split(":")[0]) : 0
+  //   );
+  //   const [currentMinutes, setCurrentMinutes] = useState(
+  //     selectedTime ? parseInt(selectedTime.split(":")[1]) : 0
+  //   );
+  //   const [currentDate, setCurrentDate] = useState(
+  //     format(subDays(new Date(), 0), "iii d LLL")
+  //   );
 
-  const initialDateIndex = differenceInCalendarDays(new Date(), selectedDate);
+  //   const initialDateIndex = differenceInCalendarDays(new Date(), selectedDate);
 
-  function updateCurrentDate(_relative, absolute) {
-    setCurrentDate(format(subDays(new Date(), absolute), "iii d LLL"));
-  }
-  function formateDate(_relative, absolute) {
-    return format(subDays(new Date(), absolute), "iii d LLL");
-  }
+  //   function updateCurrentDate(_relative, absolute) {
+  //     setCurrentDate(format(subDays(new Date(), absolute), "iii d LLL"));
+  //   }
+  //   function formateDate(_relative, absolute) {
+  //     return format(subDays(new Date(), absolute), "iii d LLL");
+  //   }
 
   //   useEffect(() => {
   //     setSelectedDate(currentDate);

@@ -1,24 +1,18 @@
 import { useContext, useEffect, useState } from "react";
-import {
-  createWhatsAppLink,
-  peopleLandingInSameTimeSlot,
-  sampleNames,
-} from "../../lib/constants";
+import { createWhatsAppLinkForCarpool } from "../../lib/constants";
 import { RegistrationContext } from "../../middleware/RegistrationContext";
 import { jwtDecode } from "jwt-decode";
 import { Skeleton, Spin } from "antd";
 import axios from "axios";
-import { ENDPOINTS, baseApiUrl } from "../../lib/constants";
+import { ENDPOINTS } from "../../lib/constants";
 import moment from "moment";
 import {
   ArrowRightOutlined,
-  ManOutlined,
-  ShoppingCartOutlined,
   ShoppingOutlined,
   UserOutlined,
 } from "@ant-design/icons";
 import { motion } from "framer-motion";
-import { Toaster, toast } from "sonner";
+import { toast } from "sonner";
 
 // import mixpanel from "mixpanel-browser";
 // import { MixpanelEvents } from "../../lib/mixpanel";
@@ -28,14 +22,10 @@ const Carpool = () => {
   const {
     name,
     email,
-    destination,
-    selectedTime,
-    selectedDate,
     setPicture,
     setGivenName,
     setName,
     setEmail,
-    source,
     matchedUsers,
     setMatchedUsers,
     pendingRequestDetails,
@@ -45,20 +35,7 @@ const Carpool = () => {
   } = registrationContext;
   const similarArrivalTimes = matchedUsers;
   const [matchedCount, setMatchedCount] = useState(-1);
-  const [timeRange, setTimeRange] = useState(3);
-
-  const convertStringToDateWithMoment = (dateString) => {
-    // Parse the string into a moment object
-    let date = moment(dateString, "DD/MM/YYYY");
-    // Format it to 'dd-mmm-yyyy'
-    return date.format("DD MMM");
-  };
-
-  const addHours = ({ dateString, timeString, hours }) => {
-    const dateTime = moment(dateString + " " + timeString, "DD/MM/YYYY h:m");
-    dateTime.add(hours, "hours");
-    return dateTime.format("DD MMM");
-  };
+  const [timeRange] = useState(3);
 
   useEffect(() => {
     const pittsburgh2peer = JSON.parse(localStorage.getItem("pittsburgh2peer"));
@@ -103,6 +80,9 @@ const Carpool = () => {
     setPicture,
     pendingRequestDetails,
     userToken,
+    email,
+    setMatchedUsers,
+    timeRange,
   ]);
 
   useEffect(() => {
@@ -173,6 +153,29 @@ const Carpool = () => {
         {matchedCount !== 0 ? (
           <div className="flex flex-col w-full justify-center items-center">
             <h3 className="text-base font-light pb-4 flex flex-col md:items-center md:justify-center gap-4">
+              <div className="flex flex-col border-cmu-red border-b p-2 items-start md:items-center w-full gap-2 pb-4">
+                <div className="font-thin text-base">Your request </div>
+                <div className="font-normal text-xs flex flex-row items-start gap-2">
+                  {moment(
+                    pendingRequestDetails?.date +
+                      " " +
+                      pendingRequestDetails?.time,
+                    "DD-MM-yyyy HH:m"
+                  ).format("DD MMM h:mm A")}
+                  <div>/</div>
+                  <div>
+                    <UserOutlined /> x {pendingRequestDetails?.noOfPassengers}
+                  </div>
+                  <div>/</div>
+                  <div>
+                    <ShoppingOutlined /> x {pendingRequestDetails?.noOfTrolleys}
+                  </div>
+                </div>
+                <div className="flex flex-row gap-2 items-start text-xs ">
+                  {pendingRequestDetails?.startLocation} <ArrowRightOutlined />{" "}
+                  {pendingRequestDetails?.endLocation}
+                </div>
+              </div>
               <div className="border-b border-cmu-red pb-4">
                 {`${
                   similarArrivalTimes?.length ? `Here's` : `Loading`
@@ -180,11 +183,11 @@ const Carpool = () => {
               </div>
 
               {similarArrivalTimes?.length ? (
-                <div className="text-sm inline" onClick={handleViewMyRequest}>
+                <div className="text-sm inline">
                   <div className="inline">Click any name to get in touch</div>{" "}
-                  <div className="text-cmu-iron-gray cursor-pointer inline">
+                  {/* <div className="text-cmu-iron-gray cursor-pointer inline">
                     or View your request
-                  </div>
+                  </div> */}
                 </div>
               ) : null}
             </h3>
@@ -202,7 +205,7 @@ const Carpool = () => {
                     date,
                   }) => (
                     <motion.a
-                      href={`${createWhatsAppLink({
+                      href={`${createWhatsAppLinkForCarpool({
                         phone: phoneNo,
                         receiverName: receiverName,
                         source: startLocation,
@@ -244,6 +247,31 @@ const Carpool = () => {
           </div>
         ) : (
           <div className="text-lg font-medium">
+            <div className="flex flex-col bg-cmu-iron-gray text-white py-2 p-4  border-b mb-4 items-start md:items-center w-full gap-2 pb-4">
+              <div className="font-thin text-base">Your request </div>
+              <div className="font-normal text-xs flex flex-row items-start gap-2">
+                {moment(
+                  pendingRequestDetails?.date +
+                    " " +
+                    pendingRequestDetails?.time,
+                  "DD-MM-yyyy HH:m"
+                ).format("DD MMM HH:mm A")}
+                <div>/</div>
+                <div>
+                  <UserOutlined /> x {pendingRequestDetails?.noOfPassengers}
+                </div>
+                <div>/</div>
+                <div>
+                  <ShoppingOutlined /> x {pendingRequestDetails?.noOfTrolleys}
+                </div>
+              </div>
+              <div className="inline flex-row gap-2 items-start text-xs ">
+                {pendingRequestDetails?.startLocation} {"  "}{" "}
+                <ArrowRightOutlined />
+                {"  "}
+                {pendingRequestDetails?.endLocation}
+              </div>
+            </div>
             <p>
               Keep calm and be patient. Nobody has signed up with this slot yet.
               🤞
@@ -252,12 +280,6 @@ const Carpool = () => {
               Please check back in a day. We're working on solutions to notify
               you in the meanwhile.
             </p>
-            <div className="text-sm inline" onClick={handleViewMyRequest}>
-              <div className="inline">Click any name to get in touch</div>{" "}
-              <div className="text-cmu-iron-gray cursor-pointer inline">
-                or View your request
-              </div>
-            </div>
           </div>
         )}
       </Skeleton>

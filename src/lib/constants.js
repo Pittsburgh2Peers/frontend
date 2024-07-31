@@ -1,3 +1,5 @@
+import moment from "moment";
+
 export const stages = {
   HOMEPAGE: "homepage",
   FIND_A_RIDE: "find_a_ride",
@@ -102,7 +104,7 @@ export const peopleLandingInSameTimeSlot = [
 ];
 
 export const whatsappTextBaseUrl = "https://api.whatsapp.com/send?text=";
-export const createWhatsAppLink = ({
+export const createWhatsAppLinkForCarpool = ({
   phone,
   senderName,
   receiverName,
@@ -112,8 +114,28 @@ export const createWhatsAppLink = ({
     receiverName.split(" ")[0]
   }! I'm ${senderName} and I noticed on P2P that we both arrive in ${source} at about the same time. Would you like to tag along to save money and maybe make new friends?`;
 
-// export const baseApiUrl = "https://pittsburgh2peers.pythonanywhere.com";
-export const baseApiUrl = process.env.BASE_API_URL;
+export const createWhatsAppLinkForUhaul = ({
+  phone,
+  senderName,
+  receiverName,
+  date,
+  receiverDate,
+}) =>
+  `https://wa.me/${phone.replace(/\s+/g, "")}?text=Hi ${
+    receiverName.split(" ")[0]
+  }! I'm ${senderName} and I noticed on P2P that we both seem to need a UHaul at about the same time (I was looking to rent it on ${moment(
+    date,
+    "DD-MM-YYYY"
+  ).format("Do MMM")} 
+ 	${
+    date === receiverDate
+      ? `and noticed you wanted it on ${moment(
+          receiverDate,
+          "DD-MM-YYYY"
+        ).format("Do MMM")})`
+      : `and noticed you wanted it on the same day too!`
+  } 
+  . Would you like to tag along to save money and maybe make new friends?`;
 
 export const ENDPOINTS = {
   POST_RegistrationSuccess: "/registrationSuccess",

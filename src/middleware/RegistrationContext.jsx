@@ -45,6 +45,9 @@ export const P2PRegistrationContext = ({ children }) => {
   const [pendingRequestDetails, setPendingRequestDetails] = useState(null);
   const [carPoolRequested, setCarPoolRequested] = useState(false); // State to track if a carpool has been requested
   const [uHaulRequested, setUHaulRequested] = useState(false); // State to track if a UHaul has been requested
+  const [isBetaUser, setIsBetaUser] = useState(false);
+  const [isUHaulEnabledForAll, setIsUHaulEnabledForAll] = useState(false); // State to track if UHaul service is enabled for all users
+  const [profileHasPhoneNumber, setProfileHasPhoneNumber] = useState(false);
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
@@ -69,11 +72,21 @@ export const P2PRegistrationContext = ({ children }) => {
           phoneNo: formatPhoneNumber(phoneNumber),
           countryCode: "+" + getCountryCallingCode(parsedPhoneNumber.country),
         };
-        const response = await axios.put(
-          process.env.REACT_APP_BASE_API_URL + ENDPOINTS.POST_UpdateUserProfile,
-          updateUserProfileBody
-        );
-        break;
+
+        if (!profileHasPhoneNumber) {
+          const response = await axios.put(
+            process.env.REACT_APP_BASE_API_URL +
+              ENDPOINTS.POST_UpdateUserProfile,
+            updateUserProfileBody
+          );
+          if (response.data.errorCode === 0) {
+            toast("Succesfully updated profile!");
+          } else {
+            toast("Failed to update profile!");
+          }
+          break;
+        }
+
       default:
         setStage(navigation[stage].next);
     }
@@ -214,6 +227,12 @@ export const P2PRegistrationContext = ({ children }) => {
         setCarPoolRequested,
         uHaulRequested,
         setUHaulRequested,
+        isBetaUser,
+        setIsBetaUser,
+        isUHaulEnabledForAll,
+        setIsUHaulEnabledForAll,
+        profileHasPhoneNumber,
+        setProfileHasPhoneNumber,
       }}
     >
       {children}
