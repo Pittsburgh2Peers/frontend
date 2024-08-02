@@ -155,9 +155,9 @@ const Profile = () => {
         />
         <div className="flex flex-row justify-start gap-4 items-center">
           <Button onClick={onSave}>Save</Button>
-          <Button onClick={logoutFromP2P} className="bg-red-500 text-white">
+          {/* <Button onClick={logoutFromP2P} className="bg-red-500 text-white">
             Logout
-          </Button>
+          </Button> */}
         </div>
         <Toaster />
       </div>

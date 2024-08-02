@@ -6,6 +6,7 @@ import { ENDPOINTS, stages } from "../lib/constants";
 import { Dropdown, Menu } from "antd";
 import { Toaster, toast } from "sonner";
 import { jwtDecode } from "jwt-decode";
+import { UserOutlined } from "@ant-design/icons";
 // import mixpanel from "mixpanel-browser";
 // import { MixpanelEvents } from "../lib/mixpanel";
 
@@ -84,6 +85,12 @@ const TopBar = () => {
         >
           Home
         </p>
+        <p
+          className="cursor-pointer hover:text-cmu-red"
+          onClick={handleAboutClick}
+        >
+          About
+        </p>
         {checkLocalStorage() ? (
           <Dropdown
             overlay={
@@ -97,15 +104,11 @@ const TopBar = () => {
               </Menu>
             }
           >
-            <p className="cursor-pointer hover:text-cmu-red">Profile</p>
+            <p className="cursor-pointer hover:text-cmu-red">
+              <UserOutlined />
+            </p>
           </Dropdown>
         ) : null}
-        <p
-          className="cursor-pointer hover:text-cmu-red"
-          onClick={handleAboutClick}
-        >
-          About
-        </p>
       </div>
     </div>
   );

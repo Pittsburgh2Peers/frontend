@@ -30,27 +30,16 @@ const LandingPage = ({ setIsSignedIn }) => {
         students.
       </p>
       <div className="flex flex-col w-full justify-start p-4 gap-4">
-        <p className="hover:text-cmu-red transition-all duration-500 ease-in-out">
+        <p className="">
           <CarOutlined className="pr-4" />
           Find a ride from the airport
         </p>
 
-        <motion.p
-          className="hover:text-cmu-red transition-all duration-500 ease-in-out"
-          onClick={handleAnimation}
-          initial={{ opacity: 1 }}
-          animate={{ opacity: isAnimating ? 0.5 : 1 }}
-          transition={{ duration: 0.5 }}
-        >
-          <motion.span
-            initial={{ x: 0 }}
-            animate={{ x: isAnimating ? window.innerWidth : 0 }}
-            transition={{ duration: 1 }}
-            onAnimationComplete={() => setIsAnimating(false)}
-          >
+        <motion.p className="" onClick={handleAnimation}>
+          <motion.span>
             <TruckOutlined className="pr-4" />
           </motion.span>
-          Request a UHaul
+          Request a U-Haul
         </motion.p>
       </div>
     </div>

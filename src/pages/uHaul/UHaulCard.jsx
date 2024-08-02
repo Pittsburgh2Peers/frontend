@@ -37,7 +37,7 @@ const UHaulCard = ({
         isSelf ? "bg-cmu-iron-gray text-white" : ""
       } flex flex-col gap-2 text-base w-full rounded hover:shadow-lg transition-all duration-300 py-2 p-4 max-w-sm border-slate-200 border`}
     >
-      <div>
+      <div className={`${isSelf ? "font-thin" : ""}`}>
         {isSelf ? "Your request:" : ""} {receiverName}
       </div>
       <div className="flex flex-col gap-1 pt-2 p-1 pl-0 text-xs">

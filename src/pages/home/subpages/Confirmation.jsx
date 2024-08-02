@@ -60,7 +60,7 @@ const Confirmation = () => {
       date: moment(selectedDate)
         .set("year", moment().year())
         .format("DD-MM-YYYY"),
-      time: moment(selectedTime, "h:m").format("hh:mm"),
+      time: moment(selectedTime, "HH:mm").format("HH:mm"),
       timeRange: 3,
     };
 
@@ -86,7 +86,7 @@ const Confirmation = () => {
       date: moment(selectedDate)
         .set("year", moment().year())
         .format("DD-MM-YYYY"),
-      time: moment(selectedTime, "h:m").format("hh:mm"),
+      time: moment(selectedTime, "HH:m").format("HH:mm"),
       startLocation: source,
       canDrive: requireDriver,
       endLocation: destination,
@@ -161,6 +161,12 @@ const Confirmation = () => {
               ) : (
                 <p>
                   {`We couldn't find anyone in the same timeslot as you yet. Check again in a couple of hours. `}
+                  <p className="font-semibold text-black pb-2">
+                    {"[ "}
+                    {moment(selectedDate).format("ddd, MMM D")}, at{" "}
+                    {moment(selectedTime, "HH:mm").format("h:mm A")}
+                    {" ]"}
+                  </p>
                   <a
                     className="text-cmu-red hover:text-cmu-red hover:border-b hover:border-cmu-red "
                     href="https://api.whatsapp.com/send?text=https://pittsburgh2peers.vercel.app/"
@@ -223,7 +229,7 @@ const Confirmation = () => {
                   <p>
                     {`We have found ${matchedCount} other ${
                       matchedCount > 1 ? "s" : " user"
-                    } requesting a UHaul within a +/- 2
+                    } requesting a U-Haul within a +/- 2
                     day interval from when you land.`}
                   </p>
                   <p className="font-semibold text-black pb-2">
@@ -237,6 +243,12 @@ const Confirmation = () => {
               ) : (
                 <p>
                   {`We couldn't find anyone in the same timeslot as you yet. Check again in a couple of hours. `}
+                  <p className="font-semibold text-black pb-2">
+                    {"[ "}
+                    {moment(selectedDate).format("ddd, MMM D")}, at{" "}
+                    {moment(selectedTime, "HH:mm").format("h:mm A")}
+                    {" ]"}
+                  </p>
                   <a
                     className="text-cmu-red hover:text-cmu-red hover:border-b hover:border-cmu-red "
                     href="https://api.whatsapp.com/send?text=https://pittsburgh2peers.vercel.app/"

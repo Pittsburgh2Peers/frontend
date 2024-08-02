@@ -12,13 +12,9 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import mixpanel from "mixpanel-browser";
 import { MixpanelEvents } from "../../../lib/mixpanel";
+import moment from "moment";
 
 const Services = ({ service, setStage, setService }) => {
-  const handleServiceClick = (service) => {
-    mixpanel.track(MixpanelEvents.USER_SELECTED_SERVICE, { service: service });
-    setService(service);
-  };
-
   const registrationContext = useContext(RegistrationContext);
   const {
     isUserEligibleForRequests,
@@ -35,6 +31,13 @@ const Services = ({ service, setStage, setService }) => {
     setIsBetaUser,
     isUHaulEnabledForAll,
     setIsUHaulEnabledForAll,
+    setSource,
+    setDestination,
+    setNumberOfPeople,
+    setNumberOfTrolleys,
+    setRequireDriver,
+    setSelectedDate,
+    setSelectedTime,
   } = registrationContext;
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -45,22 +48,80 @@ const Services = ({ service, setStage, setService }) => {
     navigate("/uhaul");
   };
 
-  //   const checkIsUserEligibleForRequests = async () => {
-  //     const checkEligibilityBody = {
-  //       token: localStorage.getItem("p2puserToken"),
-  //       email: email,
-  //     };
-  //     try {
-  //       const response = await axios.post(
-  //         baseApiUrl + ENDPOINTS.POST_UserProfileComplete,
-  //         checkEligibilityBody
-  //       );
+  const fetchMyCarpoolRequests = async () => {
+    const checkEligibilityBody = {
+      token: userToken,
+      email: email,
+    };
+    try {
+      const response = await axios.post(
+        process.env.REACT_APP_BASE_API_URL + ENDPOINTS.POST_GetMyCarPoolOffers,
+        checkEligibilityBody
+      );
+      console.log(response);
+      setSelectedDate(
+        moment(response.data.pendingRequestDetails?.date, "DD-MM-YYYY").format(
+          "YYYY-MM-DD"
+        )
+      );
+      setSelectedTime(
+        moment(response.data.pendingRequestDetails?.time, "HH:mm").format(
+          "HH:mm"
+        )
+      );
+      setNumberOfPeople(response.data.pendingRequestDetails?.noOfPassengers);
+      setNumberOfTrolleys(response.data.pendingRequestDetails?.noOfTrolleys);
+      setSource(response.data.pendingRequestDetails?.startLocation);
+      setDestination(response.data.pendingRequestDetails?.endLocation);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-  //       setIsUserEligibleForRequests(response.data.eligible);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
+  const fetchMyUHaulRequests = async () => {
+    const fetchMyUhaulRequestsBody = {
+      token: userToken,
+      email: email,
+    };
+
+    try {
+      const response = await axios.post(
+        process.env.REACT_APP_BASE_API_URL + ENDPOINTS.POST_GetMyUHaulOffers,
+        fetchMyUhaulRequestsBody
+      );
+      setSelectedDate(
+        moment(response.data.pendingRequestDetails?.date, "DD-MM-YYYY").format(
+          "YYYY-MM-DD"
+        )
+      );
+      setSelectedTime(
+        moment(response.data.pendingRequestDetails?.time, "HH:mm").format(
+          "HH:mm"
+        )
+      );
+      setRequireDriver(
+        !response.data.pendingRequestDetails?.personWillingToDrive
+      );
+      setSource(response.data.pendingRequestDetails?.startLocation);
+      setDestination(response.data.pendingRequestDetails?.endLocation);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const handleServiceClick = (service) => {
+    mixpanel.track(MixpanelEvents.USER_SELECTED_SERVICE, { service: service });
+    setService(service);
+
+    switch (service) {
+      case P2PServices.FIND_A_RIDE:
+        fetchMyCarpoolRequests();
+        break;
+      case P2PServices.REQUEST_A_UHAUL:
+        fetchMyUHaulRequests();
+        break;
+    }
+  };
+
   useEffect(() => {
     const checkIfCarpoolShown = async () => {
       const checkEligibilityBody = {
@@ -118,6 +179,68 @@ const Services = ({ service, setStage, setService }) => {
     checkFlags();
   }, [userToken]);
 
+  useEffect(() => {
+    const fetchMyCarpoolRequests = async () => {
+      const checkEligibilityBody = {
+        token: userToken,
+        email: email,
+      };
+      try {
+        const response = await axios.post(
+          process.env.REACT_APP_BASE_API_URL +
+            ENDPOINTS.POST_GetMyCarPoolOffers,
+          checkEligibilityBody
+        );
+        setSelectedDate(
+          moment(response.pendingRequestDetails?.date).format("DD-MM-YYYY")
+        );
+        setSelectedTime(
+          moment(response.pendingRequestDetails?.time).format("HH:mm")
+        );
+        setNumberOfPeople(response.pendingRequestDetails?.noOfPassengers);
+        setNumberOfTrolleys(response.pendingRequestDetails?.noOfTrolleys);
+        setSource(response.pendingRequestDetails?.startLocation);
+        setDestination(response.pendingRequestDetails?.endLocation);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    const fetchMyUHaulRequests = async () => {
+      const fetchMyUhaulRequestsBody = {
+        token: userToken,
+        email: email,
+      };
+
+      try {
+        const response = await axios.post(
+          process.env.REACT_APP_BASE_API_URL + ENDPOINTS.POST_GetMyUHaulOffers,
+          fetchMyUhaulRequestsBody
+        );
+        setSelectedDate(
+          moment(response.pendingRequestDetails?.date).format("DD-MM-YYYY")
+        );
+        setSelectedTime(
+          moment(response.pendingRequestDetails?.time).format("HH:mm")
+        );
+        setRequireDriver(response.pendingRequestDetails?.personWillingToDrive);
+        setSource(response.pendingRequestDetails?.startLocation);
+        setDestination(response.pendingRequestDetails?.endLocation);
+      } catch (error) {
+        console.error(error);
+      }
+
+      switch (service) {
+        case P2PServices.FIND_A_RIDE:
+          fetchMyCarpoolRequests();
+          break;
+        case P2PServices.REQUEST_A_UHAUL:
+          fetchMyUHaulRequests();
+          break;
+      }
+    };
+  }, [service, userToken]);
+
   return (
     <AnimatePresence>
       <motion.div
@@ -146,7 +269,7 @@ const Services = ({ service, setStage, setService }) => {
               onClick={() => handleServiceClick(P2PServices.FIND_A_RIDE)}
             >
               <CarOutlined />
-              Find a ride
+              {carPoolRequested ? `Modify your ride request` : `Find a ride`}
             </Button>
             <Button
               size={"large"}
@@ -160,7 +283,9 @@ const Services = ({ service, setStage, setService }) => {
               onClick={() => handleServiceClick(P2PServices.REQUEST_A_UHAUL)}
             >
               <TruckOutlined />
-              Request a UHaul
+              {uHaulRequested
+                ? `Modify your U-Haul request`
+                : `Request a U-Haul`}
             </Button>
           </div>
           <div
@@ -192,7 +317,7 @@ const Services = ({ service, setStage, setService }) => {
                   loading={loading}
                 >
                   <UsergroupAddOutlined />
-                  View matched UHaul Requests
+                  View matched U-Haul Requests
                 </Button>
               </div>
             ) : null}

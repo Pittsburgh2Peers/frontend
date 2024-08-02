@@ -24,7 +24,7 @@ const ArrivalDetails = ({
           {service === P2PServices.FIND_A_RIDE
             ? "reach Pittsburgh"
             : service === P2PServices.REQUEST_A_UHAUL
-            ? "need the UHaul"
+            ? "need the U-Haul"
             : null}
           ? (EST)
         </p>

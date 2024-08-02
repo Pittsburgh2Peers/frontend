@@ -43,10 +43,8 @@ const Uhaul = () => {
       const fetchUHaulRequestBody = {
         token: userToken,
         email: email,
-        date: moment(pendingRequestDetails?.date)
-          .set("year", moment().year())
-          .format("DD-MM-YYYY"),
-        time: moment(pendingRequestDetails?.time, "HH:mm").format("HH:mm"),
+        date: pendingRequestDetails?.date,
+        time: pendingRequestDetails?.time,
         startLocation: pendingRequestDetails?.source,
         canDrive: pendingRequestDetails?.personWillingToDrive,
         endLocation: pendingRequestDetails?.destination,
@@ -70,8 +68,9 @@ const Uhaul = () => {
         console.log(error);
       }
     };
-
-    fetchUHaulRequestsWithSimilarTimes();
+    if (userToken && email && pendingRequestDetails?.startLocation) {
+      fetchUHaulRequestsWithSimilarTimes();
+    }
   }, [userToken, pendingRequestDetails]);
 
   useEffect(() => {
@@ -99,7 +98,9 @@ const Uhaul = () => {
         console.error(error);
       }
     };
-    fetchMyUHaulRequests();
+    if (userToken && email) {
+      fetchMyUHaulRequests();
+    }
   }, [userToken]);
   return (
     <div className="flex flex-col justify-center w-full gap-2 items-center p-8">

@@ -152,8 +152,8 @@ const Carpool = () => {
       >
         {matchedCount !== 0 ? (
           <div className="flex flex-col w-full justify-center items-center">
-            <h3 className="text-base font-light pb-4 flex flex-col md:items-center md:justify-center gap-4">
-              <div className="flex flex-col border-cmu-red border-b p-2 items-start md:items-center w-full gap-2 pb-4">
+            <h3 className="text-base font-light pb-4 flex flex-col max-w-sm md:items-center md:justify-center gap-4">
+              <div className="flex flex-col bg-cmu-iron-gray text-white py-2 p-4  border-b mb-4 items-start md:items-center w-full gap-2 pb-4">
                 <div className="font-thin text-base">Your request </div>
                 <div className="font-normal text-xs flex flex-row items-start gap-2">
                   {moment(
@@ -161,7 +161,7 @@ const Carpool = () => {
                       " " +
                       pendingRequestDetails?.time,
                     "DD-MM-yyyy HH:m"
-                  ).format("DD MMM h:mm A")}
+                  ).format("DD MMM HH:mm A")}
                   <div>/</div>
                   <div>
                     <UserOutlined /> x {pendingRequestDetails?.noOfPassengers}
@@ -171,8 +171,10 @@ const Carpool = () => {
                     <ShoppingOutlined /> x {pendingRequestDetails?.noOfTrolleys}
                   </div>
                 </div>
-                <div className="flex flex-row gap-2 items-start text-xs ">
-                  {pendingRequestDetails?.startLocation} <ArrowRightOutlined />{" "}
+                <div className="inline flex-row gap-2 items-start text-xs ">
+                  {pendingRequestDetails?.startLocation} {"  "}{" "}
+                  <ArrowRightOutlined />
+                  {"  "}
                   {pendingRequestDetails?.endLocation}
                 </div>
               </div>
@@ -246,9 +248,9 @@ const Carpool = () => {
             </div>
           </div>
         ) : (
-          <div className="text-lg font-medium">
-            <div className="flex flex-col bg-cmu-iron-gray text-white py-2 p-4  border-b mb-4 items-start md:items-center w-full gap-2 pb-4">
-              <div className="font-thin text-base">Your request </div>
+          <div className="text-lg font-medium max-w-sm flex flex-col gap-2 justify-center">
+            <div className="flex flex-col bg-cmu-iron-gray text-white py-2 p-4 border-b mb-4 items-start w-full gap-2 pb-4">
+              <div className="font-thin text-base">Your request: {name} </div>
               <div className="font-normal text-xs flex flex-row items-start gap-2">
                 {moment(
                   pendingRequestDetails?.date +
@@ -272,6 +274,9 @@ const Carpool = () => {
                 {pendingRequestDetails?.endLocation}
               </div>
             </div>
+            <p className="font-bold text-base flex justify-center">
+              Matched Requests
+            </p>
             <p>
               Keep calm and be patient. Nobody has signed up with this slot yet.
               🤞

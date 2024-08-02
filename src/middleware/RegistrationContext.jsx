@@ -116,7 +116,7 @@ export const P2PRegistrationContext = ({ children }) => {
       time: moment(selectedTime, "HH:mm").format("HH:mm"),
       startLocation: source,
       endLocation: destination,
-      canDrive: requireDriver,
+      canDrive: !requireDriver,
     };
 
     try {
@@ -128,7 +128,7 @@ export const P2PRegistrationContext = ({ children }) => {
       const { errorCode } = response.data;
       const userMessage =
         errorCode === "0"
-          ? "Succesfully raised a UHaul request"
+          ? "Succesfully raised a U-Haul request"
           : "Error: Oops, something went wrong.";
       toast(userMessage);
       setStage(navigation[stage].next);

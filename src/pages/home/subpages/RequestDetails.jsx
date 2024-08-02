@@ -37,10 +37,12 @@ const RequestDetails = () => {
   }, []);
 
   const [numberOfPeopleSelection, setNumberOfPeopleSelection] = useState(
-    numberOfPeople < 4 ? numberOfPeople : 4
+    parseInt(numberOfPeople, 10) < 4 ? parseInt(numberOfPeople, 10) : 4
   );
   const [numberOfTrolleysSelection, setNumberOfTrolleysSelection] = useState(
-    numberOfTrolleys < 8 ? numberOfTrolleys : "More than 8"
+    parseInt(numberOfTrolleys, 10) < 8
+      ? parseInt(numberOfTrolleys, 10)
+      : "More than 8"
   );
 
   if (service === P2PServices.FIND_A_RIDE) {
@@ -139,7 +141,7 @@ const RequestDetails = () => {
         exit={{ opacity: 0 }}
         transition={{ duration: 0.5, ease: [0.42, 0, 0.58, 1] }}
       >
-        <div>Would you require someone to drive the UHaul?</div>
+        <div>Would you require someone to drive the U-Haul?</div>
         <Radio.Group
           value={requireDriver}
           buttonStyle="solid"
